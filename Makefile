@@ -1,4 +1,5 @@
 CC = gcc
+CFLAGS = -O5 -s
 
 all: price-server counter pusher puller
 
@@ -11,14 +12,14 @@ clean:
 # Executables.
 ##
 
-price-server: price-server.c
-	$(CC) -o price-server price-server.c
+price-server: price-server.c signals.c
+	$(CC) $(CFLAGS) -o price-server price-server.c signals.c
 
 counter: counter.c signals.c
-	$(CC) -o counter counter.c signals.c
+	$(CC) $(CFLAGS) -o counter counter.c signals.c
 
 pusher: pusher.c
-	$(CC) -o pusher pusher.c
+	$(CC) $(CFLAGS) -o pusher pusher.c
 
 puller: puller.c
-	$(CC) -o puller puller.c
+	$(CC) $(CFLAGS) -o puller puller.c

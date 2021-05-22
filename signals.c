@@ -17,7 +17,7 @@ int setup_signal_handlers() {
     sigfillset(&sa.sa_mask);
     
     if (sigaction(SIGINT, &sa, 0) == -1) {
-        fprintf(stderr, "Error: cannot handle SIGINT");
+        perror("Error: cannot handle SIGINT");
         return -1;
     }
     
@@ -33,3 +33,4 @@ int setup_signal_handlers() {
     
     return 0;
 }
+

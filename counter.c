@@ -9,7 +9,6 @@
 
 int ep_init(int nsocks, ...) {
     int efd = epoll_create1(0);
-    
     va_list valist;
     va_start(valist, nsocks);
     
