@@ -38,7 +38,7 @@ int setup_signal_handlers() {
 }
 
 void cleanup() {
-    printf("Cleaning up...");
+    printf("Cleaning up...\n");
 }
 
 int main(int argc, char** argv) {
