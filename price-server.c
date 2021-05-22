@@ -44,6 +44,8 @@ int make_listener(const char* addr, const unsigned short port) {
         return -1;
     }
     
+    printf("Created listener listening on %s:%u\n", addr, port);
+    
     return listener;
 }
 
@@ -84,7 +86,7 @@ int make_sock_udp() {
 }
 
 void serve(const char* listen_addr, const unsigned short listen_port) {
-    int listener, sock_tcp, sock_udp;
+    int listener = -1, sock_tcp = -1, sock_udp = -1;
     
     if ((listener = make_listener(listen_addr, listen_port)) == -1) {
         fprintf(stderr, "Failed to listen. quitting.\n");
@@ -101,18 +103,22 @@ void serve(const char* listen_addr, const unsigned short listen_port) {
         printf("Randomly generated price: %u\n", price);
         
         // Send price to TCP client.
-        send(sock_tcp, &price, sizeof(price), 0);
+        if (send(sock_tcp, &price, sizeof(price), 0) == -1) {
+            perror("send");
+            break;
+        }
         
         // Send price to UDP client.
-        //TODO
+        //sendto(sock_udp, &price, sizeof(price), 0, &dest, )
         
         sleep(1);
     }
     
 done:
-    close(sock_udp);
-    close(sock_tcp);
-    close(listener);
+    printf("Shutting down...");
+    if (sock_udp != -1) close(sock_udp);
+    if (sock_tcp != -1) close(sock_tcp);
+    if (listener != -1) close(listener);
 }
 
 int main(int argc, char** argv)

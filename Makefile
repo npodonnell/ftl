@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O5 -s
+CFLAGS = #-O5 -s
 
 all: price-server counter pusher puller
 
