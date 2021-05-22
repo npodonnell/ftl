@@ -1,43 +1,11 @@
+#include "signals.h"
+
 #include <sys/epoll.h>
 #include <sys/socket.h>
-#include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-
-int shutting_down = 0;
-
-void handle_signal(const int signal) {
-    printf("caught signal %d\n", signal);
-    shutting_down = 1;
-}
-
-int setup_signal_handlers() {
-    struct sigaction sa;
-    
-    sa.sa_handler = &handle_signal;
-    sa.sa_flags = SA_RESTART;
-    
-    sigfillset(&sa.sa_mask);
-    
-    if (sigaction(SIGINT, &sa, NULL) == -1) {
-        perror("Error: cannot handle SIGINT");
-        return -1;
-    }
-    
-    if (sigaction(SIGHUP, &sa, NULL) == -1) {
-        perror("Error: cannot handle SIGHUP");
-        return -1;
-    }
-    
-    if (sigaction(SIGTERM, &sa, NULL) == -1) {
-        perror("Error: cannot handle SIGTERM");
-        return -1;
-    }
-    
-    return 0;
-}
 
 int ep_init(int nsocks, ...) {
     int efd = epoll_create1(0);

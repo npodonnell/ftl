@@ -1,18 +1,21 @@
 CC = gcc
 
-all: counter pusher puller
+all: price-server counter pusher puller
 
 .PHONY: clean
 
 clean:
-	rm counter pusher puller
+	rm price-server counter pusher puller
 
 ##
 # Executables.
 ##
 
-counter: counter.c
-	$(CC) -o counter counter.c
+price-server: price-server.c
+	$(CC) -o price-server price-server.c
+
+counter: counter.c signals.c
+	$(CC) -o counter counter.c signals.c
 
 pusher: pusher.c
 	$(CC) -o pusher pusher.c
