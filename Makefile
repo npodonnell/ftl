@@ -2,13 +2,20 @@ CC = gcc
 
 all: counter pusher puller
 
+.PHONY: clean
+
+clean:
+	rm counter pusher puller
+
+##
+# Executables.
+##
+
 counter: counter.c
 	$(CC) -o counter counter.c
 
 pusher: pusher.c
-	mkdir -p $(BIN)
 	$(CC) -o pusher pusher.c
 
 puller: puller.c
-	mkdir -p $(BIN)
 	$(CC) -o puller puller.c
