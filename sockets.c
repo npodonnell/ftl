@@ -1,7 +1,13 @@
 #include <fcntl.h>
+#include <stdio.h>
 
 int set_blocking(int sockfd, int blocking) {
-    int flags = fcntl(socketfd, F_GETFL, 0);
+    int flags;
+    
+    if ((flags = fcntl(sockfd, F_GETFL, 0)) == -1) {
+        perror("fcntl");
+        return -1;
+    }
     
     if (blocking) {
         flags &= ~O_NONBLOCK;
@@ -9,7 +15,10 @@ int set_blocking(int sockfd, int blocking) {
         flags |= O_NONBLOCK;
     }
     
-    if (fcntl(socketfd, F_SETFL, flags) == -1){
-        perror("calling fcntl");
+    if (fcntl(sockfd, F_SETFL, flags) == -1){
+        perror("fcntl");
+        return -1;
     }
+    
+    return 0;
 }
