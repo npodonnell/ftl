@@ -83,28 +83,6 @@ int accept_client(const int listener) {
     return sock_tcp;
 }
 
-size_t add_client(int** pclients, size_t nclients, int new_client, int ifree) {
-    if (ifree == -1) {
-        ifree = nclients;
-        (*pclients) = (int*) realloc(*pclients, ++nclients * sizeof(int));
-    }
-    
-    (*pclients)[ifree] = new_client;
-    
-    return nclients;
-}
-
-size_t remove_client(int* clients, size_t nclients, int iclient) {
-    close(clients[iclient]);
-    clients[iclient] = -1;
-    
-    if (nclients == iclient - 1) {
-        nclients--;
-    }
-    
-    return nclients;
-}
-
 void accept_loop(const char* listen_addr, const unsigned short listen_port, const int dispatcher) {
     int listener, client = -1;
     
@@ -114,8 +92,6 @@ void accept_loop(const char* listen_addr, const unsigned short listen_port, cons
     }
     
     while (!shutting_down) {
-        puts("accept loop");
-    
         if ((client = accept_client(listener)) == -1) {
             goto done;
         }
@@ -124,46 +100,46 @@ void accept_loop(const char* listen_addr, const unsigned short listen_port, cons
     }
     
 done:
-    puts("End accept loop");
     close(listener);
 }
 
 void broadcast_loop(int collector) {
     srand(time(0));
     
-    int* clients = 0;
-    size_t nclients = 0;
-    int new_client;
-    int ifree = -1;
+    int* clients = 0, new_client;
+    size_t *free_slots = 0, nclients = 0, imax = 0, nfree = 0;
     
     while (!shutting_down) {
         if (nclients > 0) {
             unsigned price = rand();
             printf("Randomly generated price: %u\n", price);
             
-            for (int i = 0; i < nclients; i++) {
+            for (size_t i = 0; i < imax; i++) {
                 if (clients[i] != -1) {
                     // Send price to TCP client.
                     if (send(clients[i], &price, sizeof(price), 0) == -1) {
                         // Client is gone.
-                        printf("Removing client %d\n", i);
-                        nclients = remove_client(clients, nclients, i);
-                        ifree = i;
+                        printf("Removing client %lu\n", i);
+                        close(clients[i]);
+                        clients[i] = -1;
+                        free_slots[nfree++] = i;
+                        nclients--;
                     }
                 }
             }
         }
         
-        // Check for new clients.
-        puts("checking for new clients");
-        
         if ((new_client = recv_fd(collector)) > -1) {
             printf("new client: %d\n", new_client);
-            nclients = add_client(&clients, nclients, new_client, ifree);
-            ifree = -1;
+            if (nfree > 0) {
+                clients[free_slots[--nfree]] = new_client;
+            } else {
+                clients = (int*) realloc(clients, ++imax * sizeof(int));
+                free_slots = (size_t*) realloc(free_slots, imax * sizeof(size_t));
+                clients[imax - 1] = new_client;
+            }
+            nclients++;
         }
-        
-        puts("finished checking for new clients");
     }
     
     if (nclients > 0) {
