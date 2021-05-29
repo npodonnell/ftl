@@ -18,8 +18,8 @@ price-server: price-server.c signals.c sockets.c pass-fd.c
 counter: counter.c signals.c
 	$(CC) $(CFLAGS) -o counter counter.c signals.c
 
-pusher: pusher.c
-	$(CC) $(CFLAGS) -o pusher pusher.c
+pusher: pusher.c signals.c
+	$(CC) $(CFLAGS) -o pusher pusher.c signals.c
 
 puller: puller.c
 	$(CC) $(CFLAGS) -o puller puller.c
