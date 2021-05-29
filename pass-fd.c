@@ -41,8 +41,6 @@ int recv_fd(int socket) {
     msg.msg_control = c_buffer;
     msg.msg_controllen = sizeof(c_buffer);
     
-    puts("before recvmsg");
-    
     fd_set readfds;
     FD_ZERO(&readfds);
     FD_SET(socket, &readfds);
