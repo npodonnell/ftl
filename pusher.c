@@ -9,15 +9,14 @@
 const char* PRICE_SERVER_IP = "127.0.0.1";
 const unsigned short PRICE_SERVER_PORT = 21123;
 
-const char* PUSHER_IP = "127.0.0.1";
-const unsigned short PUSHER_PORT = 21124;
+const char* PULLER_IP = "127.0.0.1";
+const unsigned short PULLER_PORT = 21124;
 
 void make_addr(const char* ip, const unsigned short port, struct sockaddr_in* out) {
     out->sin_family = AF_INET;
     out->sin_addr.s_addr = inet_addr(ip);
     out->sin_port = htons(port);
 }
-
 
 int main() {
     int reader, writer;
@@ -29,7 +28,7 @@ int main() {
     writer = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     
     make_addr(PRICE_SERVER_IP, PRICE_SERVER_PORT, &price_server_addr);
-    make_addr(PUSHER_IP, PUSHER_PORT, &puller_addr);
+    make_addr(PULLER_IP, PULLER_PORT, &puller_addr);
     
     if (connect(reader, (struct sockaddr*)&price_server_addr, sizeof(price_server_addr)) == -1) {
         perror("connect");

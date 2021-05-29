@@ -15,8 +15,8 @@ clean:
 price-server: price-server.c signals.c sockets.c pass-fd.c
 	$(CC) $(CFLAGS) -o price-server price-server.c signals.c sockets.c pass-fd.c
 
-counter: counter.c signals.c
-	$(CC) $(CFLAGS) -o counter counter.c signals.c
+counter: counter.c signals.c sockets.c
+	$(CC) $(CFLAGS) -o counter counter.c signals.c sockets.c
 
 pusher: pusher.c signals.c
 	$(CC) $(CFLAGS) -o pusher pusher.c signals.c

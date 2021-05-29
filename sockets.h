@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 
 int set_blocking(int sockfd, int blocking);
+void make_addr(const char* ip, const unsigned short port, struct sockaddr_in* out);
 int interruptable_recvfrom(int sockfd,
                            void* buf,
                            size_t len,

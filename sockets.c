@@ -1,6 +1,8 @@
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <strings.h>
 #include <stdio.h>
 
 int set_blocking(int sockfd, int blocking) {
@@ -23,6 +25,13 @@ int set_blocking(int sockfd, int blocking) {
     }
     
     return 0;
+}
+
+void make_addr(const char* ip, const unsigned short port, struct sockaddr_in* out) {
+    bzero(out, sizeof(struct sockaddr_in));
+    out->sin_family = AF_INET;
+    out->sin_addr.s_addr = inet_addr(ip);
+    out->sin_port = htons(port);
 }
 
 int interruptable_recvfrom(int sockfd,
