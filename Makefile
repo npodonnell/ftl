@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O5 -s
+CFLAGS = -O3 -s
 
 all: price-server counter pusher puller
 
@@ -21,5 +21,5 @@ counter: counter.c signals.c
 pusher: pusher.c signals.c
 	$(CC) $(CFLAGS) -o pusher pusher.c signals.c
 
-puller: puller.c
-	$(CC) $(CFLAGS) -o puller puller.c
+puller: puller.c signals.c sockets.c
+	$(CC) $(CFLAGS) -o puller puller.c signals.c sockets.c
